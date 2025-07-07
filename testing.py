@@ -21,14 +21,15 @@ def show_menu():
     print("1. View tasks")
     print("2. Add task")
     print("3. Remove task")
-    print("4. Exit")
+    print("4. Mark task as completed")
+    print("5. Exit")
 
 def main():
     tasks = load_tasks()
 
     while True:
         show_menu()
-        choice = input("Enter your choice (1-4): ")
+        choice = input("Enter your choice (1-5): ")
 
         if choice == "1":
             if not tasks:
@@ -36,7 +37,8 @@ def main():
             else:
                 print("\nYour Tasks:")
                 for i, task in enumerate(tasks, 1):
-                    print(f"{i}. {task}")
+                    status = "✅" if task.endswith("[Done]") else "⏳"
+                    print(f"{i}. {task.replace(' [Done]', '')} [{status}]")
 
         elif choice == "2":
             task = input("Enter new task: ")
@@ -62,6 +64,26 @@ def main():
                     print("Please enter a valid number.")
 
         elif choice == "4":
+            if not tasks:
+                print("No tasks to mark.")
+            else:
+                for i, task in enumerate(tasks, 1):
+                    print(f"{i}. {task}")
+                try:
+                    num = int(input("Enter task number to mark as completed: "))
+                    if 1 <= num <= len(tasks):
+                        if not tasks[num - 1].endswith("[Done]"):
+                            tasks[num - 1] += " [Done]"
+                            save_tasks(tasks)
+                            print("Task marked as completed.")
+                        else:
+                            print("Task is already completed.")
+                    else:
+                        print("Invalid number.")
+                except ValueError:
+                    print("Please enter a valid number.")
+
+        elif choice == "5":
             print("Goodbye!")
             break
         else:
@@ -69,3 +91,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
